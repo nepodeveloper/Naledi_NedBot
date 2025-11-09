@@ -1,0 +1,8 @@
+{
+  "from": "mary.smith@example.com",
+  "subject": "Credit Card Request",
+  "body": "I need a new credit card for my account. Can you help me with the application?",
+  "dateTimeReceived": "2025-11-09T14:35:00Z",
+  "hasAttachments": false,
+  "attachments": []
+}

@@ -1,0 +1,14 @@
+{
+  "from": "michael.smith@example.com",
+  "subject": "Credit Card Application - Gold Card",
+  "body": "Hi,\n\nI would like to apply for a Nedbank Gold Credit Card. I have attached my supporting documents.\n\nRequested Credit Limit: R50,000\nCard Type: Gold Rewards Card\n\nPlease process my application at your earliest convenience.\n\nThanks,\nMichael Smith",
+  "dateTimeReceived": "2025-01-09T14:45:00Z",
+  "hasAttachments": true,
+  "attachments": [
+    {
+      "name": "Credit_Card_Application.pdf",
+      "contentType": "application/pdf",
+      "contentBytes": "JVBERi0xLjQKJeLjz9MKMyAwIG9iago8PC9UeXBlL1BhZ2UvTWVkaWFCb3ggWzAgMCA2MTIgNzkyXS9QYXJlbnQgMiAwIFIvUmVzb3VyY2VzPDwvRm9udDw8L0YxIDQgMCBSPj4+Pi9Db250ZW50cyA1IDAgUj4+CmVuZG9iago0IDAgb2JqCjw8L1R5cGUvRm9udC9TdWJ0eXBlL1R5cGUxL0Jhc2VGb250L0hlbHZldGljYT4+CmVuZG9iago1IDAgb2JqCjw8L0xlbmd0aCA1NT4+CnN0cmVhbQpCVAovRjEgMjQgVGYKMTAwIDcwMCBUZAooQ3JlZGl0IENhcmQgQXBwbGljYXRpb24pIFRqCkVUCmVuZHN0cmVhbQplbmRvYmoKMiAwIG9iago8PC9UeXBlL1BhZ2VzL0tpZHNbMyAwIFJdL0NvdW50IDE+PgplbmRvYmoKMSAwIG9iago8PC9UeXBlL0NhdGFsb2cvUGFnZXMgMiAwIFI+PgplbmRvYmoKeHJlZgowIDYKMDAwMDAwMDAwMCA2NTUzNSBmIAowMDAwMDAwMjYzIDAwMDAwIG4gCjAwMDAwMDAyMTIgMDAwMDAgbiAKMDAwMDAwMDAwOSAwMDAwMCBuIAowMDAwMDAwMTE3IDAwMDAwIG4gCjAwMDAwMDAxODMgMDAwMDAgbiAKdHJhaWxlcgo8PC9TaXplIDYvUm9vdCAxIDAgUj4+CnN0YXJ0eHJlZgozMTIKJSVFT0Y="
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "from": "sarah.jones@example.com",
+  "subject": "Personal Loan Application",
+  "body": "I would like to apply for a personal loan of R50,000.",
+  "dateTimeReceived": "2025-11-09T14:45:00Z",
+  "hasAttachments": false,
+  "attachments": []
+}

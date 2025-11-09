@@ -1,0 +1,8 @@
+{
+  "from": "customer@example.com",
+  "subject": "Account Balance Inquiry",
+  "body": "What is my current account balance? Can you also tell me about my recent transactions?",
+  "dateTimeReceived": "2025-11-09T14:50:00Z",
+  "hasAttachments": false,
+  "attachments": []
+}

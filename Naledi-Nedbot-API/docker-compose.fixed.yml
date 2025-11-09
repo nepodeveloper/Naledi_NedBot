@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: build  # Use the build stage for development
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+      - SERVER_PORT=8080
+      - JAVA_OPTS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
+    ports:
+      - "8080:8080"  # Application port
+      - "5005:5005"  # Debug port
+    volumes:
+      - ./src:/app/src:ro  # Mount source code for hot reload
+      - ./target:/app/target
+      - maven-cache:/root/.m2  # Cache Maven dependencies
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 60s
+
+  # Optional: Add a database service if needed
+  # db:
+  #   image: postgres:15-alpine
+  #   environment:
+  #     - POSTGRES_DB=nedbot
+  #     - POSTGRES_USER=nedbot
+  #     - POSTGRES_PASSWORD=nedbot
+  #   ports:
+  #     - "5432:5432"
+  #   volumes:
+  #     - postgres-data:/var/lib/postgresql/data
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "pg_isready -U nedbot"]
+  #     interval: 10s
+  #     timeout: 5s
+  #     retries: 5
+
+volumes:
+  maven-cache:  # Persistent Maven cache
+  # postgres-data:  # Uncomment if using database

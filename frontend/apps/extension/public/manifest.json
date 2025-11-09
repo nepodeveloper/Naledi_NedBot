@@ -1,0 +1,25 @@
+{
+  "manifest_version": 3,
+  "name": "Naledi",
+  "version": "1.0.0",
+  "description": "",
+  "action": {
+    "default_popup": "index.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://*.nedbank.co.za/*"],
+      "js": ["/assets/js/init.js"],
+      "run_at": "document_end",
+      "css": ["/react/index.css"],
+      "all_frames": true
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["/react/index.js", "/react/vendor.js", "/react/index.css"],
+      "matches": ["*://*.nedbank.co.za/*"]
+    }
+  ],
+  "permissions": []
+}

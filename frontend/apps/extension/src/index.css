@@ -1,0 +1,29 @@
+@import "tailwindcss";
+
+* {
+  font-size: 14px !important;
+}
+
+@theme {
+  /* https://smart-swatch.netlify.app/#076442 */
+  --color-primary-500: #20d68f;
+  --color-primary-700: #076442;
+  --color-primary-800: #00472e;
+  --color-primary-900: #001a0e;
+
+  --color-nedbank: #118534;
+  --color-nedbank-200: #b9f7cc;
+
+  --color-secondary-800: #17252d;
+  --color-secondary-400: #6e95ac;
+  --color-secondary-200: #aec5d2;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

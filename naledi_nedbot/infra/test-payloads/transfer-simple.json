@@ -1,0 +1,8 @@
+{
+  "from": "peter.jones@example.com",
+  "subject": "Money Transfer",
+  "body": "I need to transfer R5000 to my savings account. Please process this transfer.",
+  "dateTimeReceived": "2025-11-09T14:40:00Z",
+  "hasAttachments": false,
+  "attachments": []
+}

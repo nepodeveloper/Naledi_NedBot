@@ -1,0 +1,8 @@
+{
+  "from": "john.doe@example.com",
+  "subject": "Open New Account",
+  "body": "I would like to open a new current account for my business. Please assist.",
+  "dateTimeReceived": "2025-11-09T14:30:00Z",
+  "hasAttachments": false,
+  "attachments": []
+}

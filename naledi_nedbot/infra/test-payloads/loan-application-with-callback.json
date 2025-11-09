@@ -1,0 +1,15 @@
+{
+  "from": "sarah.jones@example.com",
+  "subject": "Personal Loan Application - R150,000",
+  "body": "Dear Nedbank Team,\n\nI am applying for a personal loan of R150,000 for home renovations. I have been a client for 5 years and have attached all required documentation:\n\n- ID Document\n- Latest payslips (3 months)\n- Bank statements (3 months)\n\nLoan Details:\n- Amount: R150,000\n- Term: 60 months\n- Purpose: Home renovation\n\nThank you for your consideration.\n\nBest regards,\nSarah Jones",
+  "dateTimeReceived": "2025-01-09T11:15:00Z",
+  "hasAttachments": true,
+  "attachments": [
+    {
+      "name": "Loan_Application_Documents.pdf",
+      "contentType": "application/pdf",
+      "contentBytes": "JVBERi0xLjQKJeLjz9MKMyAwIG9iago8PC9UeXBlL1BhZ2UvTWVkaWFCb3ggWzAgMCA2MTIgNzkyXS9QYXJlbnQgMiAwIFIvUmVzb3VyY2VzPDwvRm9udDw8L0YxIDQgMCBSPj4+Pi9Db250ZW50cyA1IDAgUj4+CmVuZG9iago0IDAgb2JqCjw8L1R5cGUvRm9udC9TdWJ0eXBlL1R5cGUxL0Jhc2VGb250L0hlbHZldGljYT4+CmVuZG9iago1IDAgb2JqCjw8L0xlbmd0aCA1Mj4+CnN0cmVhbQpCVAovRjEgMjQgVGYKMTAwIDcwMCBUZAooTG9hbiBBcHBsaWNhdGlvbiBEb2NzKSBUagpFVAplbmRzdHJlYW0KZW5kb2JqCjIgMCBvYmoKPDwvVHlwZS9QYWdlcy9LaWRzWzMgMCBSXS9Db3VudCAxPj4KZW5kb2JqCjEgMCBvYmoKPDwvVHlwZS9DYXRhbG9nL1BhZ2VzIDIgMCBSPj4KZW5kb2JqCnhyZWYKMCA2CjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDI2MCAwMDAwMCBuIAowMDAwMDAwMjA5IDAwMDAwIG4gCjAwMDAwMDAwMDkgMDAwMDAgbiAKMDAwMDAwMDExNyAwMDAwMCBuIAowMDAwMDAwMTgzIDAwMDAwIG4gCnRyYWlsZXIKPDwvU2l6ZSA2L1Jvb3QgMSAwIFI+PgpzdGFydHhyZWYKMzA5CiUlRU9G"
+    }
+  ],
+  "callbackUrl": "https://your-webhook-endpoint.com/api/notifications/transactions"
+}

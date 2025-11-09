@@ -1,0 +1,9 @@
+{
+  "from": "vip.customer@example.com",
+  "subject": "Home Loan Application",
+  "body": "I would like to apply for a home loan of R2,000,000 for purchasing property.",
+  "dateTimeReceived": "2025-11-09T14:55:00Z",
+  "hasAttachments": false,
+  "attachments": [],
+  "callbackUrl": "https://webhook.site/your-unique-url-here"
+}

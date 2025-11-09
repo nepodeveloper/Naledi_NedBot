@@ -1,0 +1,213 @@
+# name: Container App CI/CD
+
+# on:
+#   push:
+#     branches: [ "main" ]
+#     paths:
+#       - 'Naledi-Nedbot-API/**'
+#       - 'naledi_nedbot/infra/**'
+#       - '.github/workflows/container-app-ci.yml'
+#   pull_request:
+#     branches: [ "main" ]
+#     paths:
+#       - 'Naledi-Nedbot-API/**'
+#       - 'naledi_nedbot/infra/**'
+#       - '.github/workflows/container-app-ci.yml'
+#   workflow_dispatch:
+#     inputs:
+#       environment:
+#         description: 'Environment to deploy to'
+#         required: true
+#         default: 'dev'
+#         type: choice
+#         options:
+#           - dev
+#           - prod
+
+# env:
+#   REGISTRY: nedbotacr
+#   IMAGE_NAME: nedbot
+#   AZURE_REGION: eastus
+
+# permissions:
+#   contents: read
+#   id-token: write # Required for OIDC
+
+# jobs:
+#   build-and-push:
+#     runs-on: ubuntu-latest
+#     # For pull requests, use dev environment as that's what the federation is configured for
+#     environment: ${{ github.event.inputs.environment || 'dev' }}
+
+#     steps:
+#       - uses: actions/checkout@v4
+
+#       - name: Set up JDK
+#         uses: actions/setup-java@v3
+#         with:
+#           java-version: '17'
+#           distribution: 'temurin'
+#           cache: 'maven'
+
+#       - name: Build with Maven
+#         run: |
+#           cd Naledi-Nedbot-API
+#           chmod +x mvnw
+#           # Skip tests during Maven build as we'll build the app in Docker
+#           ./mvnw clean compile -DskipTests
+
+#       - name: Set up Docker Buildx
+#         uses: docker/setup-buildx-action@v3
+
+#       - name: Azure login
+#         id: login
+#         uses: azure/login@v1
+#         with:
+#           client-id: ${{ secrets.AZURE_CLIENT_ID }}
+#           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+#           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+#       - name: Verify Azure permissions
+#         id: verify-permissions
+#         run: |
+#           echo "Checking Azure permissions..."
+          
+#           # Check resource group access
+#           echo "Verifying resource group access..."
+#           if ! az group show --name ${{ secrets.AZURE_RG }} &>/dev/null; then
+#             echo "::error::Cannot access resource group ${{ secrets.AZURE_RG }}. Verify service principal has Contributor rights."
+#             exit 1
+#           fi
+          
+#           # Check ACR permissions by trying to list ACRs
+#           echo "Verifying ACR permissions..."
+#           if ! az acr list --resource-group ${{ secrets.AZURE_RG }} &>/dev/null; then
+#             echo "::error::Cannot list ACRs. Verify service principal has Contributor rights on the resource group."
+#             exit 1
+#           fi
+
+#       - name: Create ACR if needed
+#         id: create-acr
+#         run: |
+#           echo "Checking if ACR exists..."
+#           if ! az acr show --name ${{ env.REGISTRY }} --resource-group ${{ secrets.AZURE_RG }} &>/dev/null; then
+#             echo "Creating new ACR..."
+#             if ! az acr create --name ${{ env.REGISTRY }} \
+#                 --resource-group ${{ secrets.AZURE_RG }} \
+#                 --sku Basic \
+#                 --admin-enabled true; then
+#               echo "::error::Failed to create ACR. Verify service principal has Contributor rights."
+#               exit 1
+#             fi
+#             echo "ACR created successfully."
+#           else
+#             echo "ACR already exists."
+#           fi
+          
+#           # Verify we can push to ACR
+#           echo "Verifying ACR push permissions..."
+#           if ! az acr login --name ${{ env.REGISTRY }} &>/dev/null; then
+#             echo "::error::Cannot authenticate to ACR. Verify service principal has AcrPush rights."
+#             exit 1
+#           fi
+          
+#           echo "ACR setup complete and verified."
+          
+#       - name: Build and push image
+#         id: build-push
+#         run: |
+#           echo "Building and pushing image..."
+          
+#           # First, verify Dockerfile exists
+#           if [ ! -f "./Naledi-Nedbot-API/Dockerfile" ]; then
+#             echo "::error::Dockerfile not found in ./Naledi-Nedbot-API/"
+#             exit 1
+#           fi
+          
+#           # Build the image with both tags
+#           if ! az acr build \
+#             --registry ${{ env.REGISTRY }} \
+#             --image ${{ env.IMAGE_NAME }}:${{ github.sha }} \
+#             --image ${{ env.IMAGE_NAME }}:${{ github.event.inputs.environment || 'dev' }} \
+#             --file ./Naledi-Nedbot-API/Dockerfile \
+#             ./Naledi-Nedbot-API; then
+#             echo "::error::Failed to build and push image. Check the logs above for details."
+#             exit 1
+#           fi
+          
+#           echo "Image built and pushed successfully with tags:"
+#           echo "  - ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}"
+#           echo "  - ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.event.inputs.environment || 'dev' }}"
+
+#   deploy:
+#     # Only deploy on push to main or manual workflow dispatch
+#     if: github.event_name == 'push' && github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
+#     needs: build-and-push
+#     runs-on: ubuntu-latest
+#     environment: ${{ github.event.inputs.environment || 'dev' }}
+
+#     steps:
+#       - uses: actions/checkout@v4
+
+#       - name: Azure login
+#         uses: azure/login@v1
+#         with:
+#           client-id: ${{ secrets.AZURE_CLIENT_ID }}
+#           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+#           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+#       - name: Deploy Web App
+#         run: |
+#           echo "Deploying to Azure Web App..."
+#           az deployment group create \
+#             --resource-group ${{ secrets.AZURE_RG }} \
+#             --template-file ./naledi_nedbot/infra/webapp.bicep \
+#             --parameters appName='nedbot-${{ github.event.inputs.environment || 'dev' }}' \
+#             --parameters containerImage='${{ env.REGISTRY }}.azurecr.io/${{ env.IMAGE_NAME }}:${{ github.sha }}' \
+#             --parameters skuName='B1' \
+#             --name webapp-${{ github.event.inputs.environment || 'dev' }}-${{ github.sha }}
+          
+#           echo "Deployment complete. Getting the web app URL..."
+#           WEBAPP_URL=$(az deployment group show \
+#             --resource-group ${{ secrets.AZURE_RG }} \
+#             --name webapp-${{ github.event.inputs.environment || 'dev' }}-${{ github.sha }} \
+#             --query "properties.outputs.webAppHostName.value" -o tsv)
+          
+#           echo "Web App URL: https://$WEBAPP_URL"
+
+#       - name: Azure login
+#         id: login
+#         uses: azure/login@v1
+#         with:
+#           client-id: ${{ secrets.AZURE_CLIENT_ID }}
+#           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+#           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+#       - name: Verify deployment permissions
+#         id: verify-deploy-permissions
+#         run: |
+#           echo "Verifying deployment permissions..."
+          
+#           # Check if we can do deployments
+#           if ! az deployment group list --resource-group ${{ secrets.AZURE_RG }} &>/dev/null; then
+#             echo "::error::Cannot access deployments. Verify service principal has Contributor rights."
+#             exit 1
+#           fi
+          
+#           # Verify Container Apps provider is registered
+#           echo "Checking Container Apps provider..."
+#           if [[ $(az provider show --namespace Microsoft.App --query "registrationState" -o tsv) != "Registered" ]]; then
+#             echo "::error::Microsoft.App provider is not registered. Please ask a subscription owner to run: az provider register --namespace Microsoft.App"
+#             exit 1
+#           fi
+
+#       - name: Deploy Container App
+#         id: deploy
+#         run: |
+#           echo "Starting deployment..."
+#           if ! az deployment group create \
+#             --resource-group ${{ secrets.AZURE_RG }} \
+#             --template-file ./naledi_nedbot/infra/main.bicep \
+#             --parameters @./naledi_nedbot/infra/${{ github.event.inputs.environment || 'dev' }}.parameters.json \
+#             --parameters containerImage=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }} \
+#             --name nedbot-${{ github.event.inputs.environment || 'dev' }}-${{ github.sha }}
